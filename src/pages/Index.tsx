@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +24,7 @@ const societies = [
 ];
 
 const Index = () => {
+  const navigate = useNavigate();
   const [loginType, setLoginType] = useState<"student" | "faculty" | "club" | null>(null);
   const [formData, setFormData] = useState({
     email: "",
@@ -64,10 +66,22 @@ const Index = () => {
       return;
     }
 
-    toast({
-      title: "Login Successful",
-      description: "Redirecting to dashboard...",
-    });
+    // Store user data in localStorage
+    localStorage.setItem("userType", loginType);
+    localStorage.setItem("userEmail", formData.email);
+    
+    if (loginType === "club") {
+      localStorage.setItem("societyName", formData.societyName);
+    }
+
+    // Navigate to appropriate dashboard
+    if (loginType === "student") {
+      navigate("/student-dashboard");
+    } else if (loginType === "faculty") {
+      navigate("/faculty-dashboard");
+    } else if (loginType === "club") {
+      navigate("/club-dashboard");
+    }
   };
 
   return (
